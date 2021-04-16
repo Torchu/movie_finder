@@ -1,6 +1,6 @@
-# movie_finder
+# Movie Finder
 
-A new Flutter project.
+With Movie Finder you can see the trending movies in your smartphone.
 
 ## Getting Started
 
