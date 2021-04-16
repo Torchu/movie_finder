@@ -19,7 +19,8 @@ class HomePage extends StatelessWidget {
         ),
         body: Container(
           child: Column(
-            children: <Widget>[_movieCards()],
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[_movieCards(), _footer(context)],
           ),
         ));
   }
@@ -31,12 +32,31 @@ class HomePage extends StatelessWidget {
         return snapshot.hasData
             ? CardSwiper(movies: snapshot.data)
             : Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: Center(
-                child: CircularProgressIndicator()
-              )
-            );
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Center(child: CircularProgressIndicator()));
       },
+    );
+  }
+
+  Widget _footer(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        children: <Widget>[
+          Text('Trending', style: Theme.of(context).textTheme.subtitle1),
+          FutureBuilder(
+            future: movieProvider.getPopular(),
+            builder: (BuildContext context, AsyncSnapshot<MovieList> snapshot) {
+              return snapshot.hasData
+                  ? CardSwiper(movies: snapshot.data)
+                  : Container(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: Center(child: CircularProgressIndicator())
+                    );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
