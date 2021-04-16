@@ -18,11 +18,11 @@ class MovieProvider {
     return new MovieList.fromJSONList(decodedData['results']);
   }
 
-  Future<MovieList> getNowPlaying() {
-    return getFromAPI('/now_playing');
+  Future<MovieList> getNowPlaying() async{
+    return await getFromAPI('/now_playing');
   }
 
-  Future<MovieList> getPopular() {
-    return getFromAPI('/popular');
+  Future<MovieList> getPopular() async{
+    return await getFromAPI('/popular');
   }
 }
