@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Movie {
   bool adult;
   String backdropPath;
@@ -47,15 +49,21 @@ class Movie {
     voteAverage = json['vote_average'] / 1;
     voteCount = json['vote_count'];
   }
+
+  ImageProvider<dynamic> getPosterImg() {
+    return posterPath != null
+        ? NetworkImage('https://image.tmdb.org/t/p/w500$posterPath')
+        : AssetImage('assets/img/no-image.jpg');
+  }
 }
 
-class Movies {
+class MovieList {
   List<Movie> items = [];
-  int total;
+  int total = 0;
 
-  Movies();
+  MovieList();
 
-  Movies.fromJSONList(List<dynamic> jsonList) {
+  MovieList.fromJSONList(List<dynamic> jsonList) {
     if (jsonList != null) {
       for (var item in jsonList) {
         final movie = new Movie.fromJSONMap(item);
