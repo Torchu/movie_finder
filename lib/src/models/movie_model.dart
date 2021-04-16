@@ -30,4 +30,38 @@ class Movie {
     this.voteAverage,
     this.voteCount,
   });
+
+  Movie.fromJSONMap(Map<String, dynamic> json) {
+    adult = json['adult'];
+    backdropPath = json['backdrop_path'];
+    genreIds = json['genre_ids'].cast<int>();
+    id = json['id'];
+    originalLanguage = json['original_language'];
+    originalTitle = json['original_title'];
+    overview = json['overview'];
+    popularity = json['popularity'] / 1;
+    posterPath = json['poster_path'];
+    releaseDate = json['release_date'];
+    title = json['title'];
+    video = json['video'];
+    voteAverage = json['vote_average'] / 1;
+    voteCount = json['vote_count'];
+  }
+}
+
+class Movies {
+  List<Movie> items = [];
+  int total;
+
+  Movies();
+
+  Movies.fromJSONList(List<dynamic> jsonList) {
+    if (jsonList != null) {
+      for (var item in jsonList) {
+        final movie = new Movie.fromJSONMap(item);
+        this.items.add(movie);
+        this.total += 1;
+      }
+    }
+  }
 }
