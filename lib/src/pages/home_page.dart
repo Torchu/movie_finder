@@ -40,25 +40,29 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _footer(BuildContext context) {
+    movieProvider.getPopular();
     return Container(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
-            child: Text('Trending movies', style: Theme.of(context).textTheme.subtitle1)
-          ),
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.04),
+              child: Text('Trending movies',
+                  style: Theme.of(context).textTheme.subtitle1)),
           SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-          FutureBuilder(
-            future: movieProvider.getPopular(),
+          StreamBuilder(
+            stream: movieProvider.popularStream,
             builder: (BuildContext context, AsyncSnapshot<MovieList> snapshot) {
               return snapshot.hasData
-                  ? CardCarousell(movies: snapshot.data)
+                  ? CardCarousell(
+                    movies: snapshot.data,
+                    nextPage: movieProvider.getPopular
+                  )
                   : Container(
                       height: MediaQuery.of(context).size.height * 0.2,
-                      child: Center(child: CircularProgressIndicator())
-                    );
+                      child: Center(child: CircularProgressIndicator()));
             },
           ),
         ],

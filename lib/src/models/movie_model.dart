@@ -72,4 +72,9 @@ class MovieList {
       }
     }
   }
+
+  void addAll(MovieList newList) {
+    this.items.addAll(newList.items);
+    this.total += newList.total;
+  }
 }
