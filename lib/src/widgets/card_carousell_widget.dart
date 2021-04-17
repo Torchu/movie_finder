@@ -21,37 +21,37 @@ class CardCarousell extends StatelessWidget {
 
     return Container(
       height: _screenSize.height * 0.2,
-      child: PageView(
+      child: PageView.builder(
         controller: _pageController,
         pageSnapping: false,
-        children: _cards(context),
+        itemCount: movies.total,
+        itemBuilder: (context, i) => _card(context, movies.items[i]),
       ),
     );
   }
 
-  List<Widget> _cards(BuildContext context) {
+  Widget _card(BuildContext context, Movie movie) {
     final _screenSize = MediaQuery.of(context).size;
 
-    return movies.items.map((movie) {
-      return Container(
-        margin: EdgeInsets.only(right: _screenSize.width * 0.035),
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                placeholder: AssetImage('assets/img/no-image.jpg'),
-                image: movie.getPosterImg(),
-                fit: BoxFit.cover,
-                height: _screenSize.height * 0.175,
-              ),
+    return Container(
+      margin: EdgeInsets.only(right: _screenSize.width * 0.035),
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              placeholder: AssetImage('assets/img/no-image.jpg'),
+              image: movie.getPosterImg(),
+              fit: BoxFit.cover,
+              height: _screenSize.height * 0.175,
             ),
-            Text(movie.title,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.caption)
-          ],
-        ),
-      );
-    }).toList();
+          ),
+          SizedBox(height: _screenSize.height * 0.005),
+          Text(movie.title,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.caption)
+        ],
+      ),
+    );
   }
 }
