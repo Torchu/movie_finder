@@ -11,6 +11,7 @@ class MovieProvider {
   String _apiPath = '3/movie';
   String _language = 'en-US';
   int _popularPage = 0;
+  bool _loadingPopular = false;
 
   MovieList _popularMovies = new MovieList();
   final _popularStreamController = StreamController<MovieList>.broadcast();
@@ -37,19 +38,21 @@ class MovieProvider {
     return await getFromAPI(path);
   }
 
-  Future<MovieList> getPopular() async {
-    _popularPage++;
-    final path = Uri.https(_url, _apiPath + '/popular', {
-      'api_key': _apikey,
-      'language': _language,
-      'page': _popularPage.toString()
-    });
+  void getPopular() async {
+    if (!_loadingPopular) {
+      _loadingPopular = true;
+      _popularPage++;
+      final path = Uri.https(_url, _apiPath + '/popular', {
+        'api_key': _apikey,
+        'language': _language,
+        'page': _popularPage.toString()
+      });
 
-    final response = await getFromAPI(path);
-    _popularMovies.addAll(response);
+      final response = await getFromAPI(path);
+      _popularMovies.addAll(response);
 
-    popularSink(_popularMovies);
-
-    return response;
+      popularSink(_popularMovies);
+      _loadingPopular = false;
+    }
   }
 }
