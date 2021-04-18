@@ -10,10 +10,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.red.shade50,
         appBar: AppBar(
           title: Text('Trending movies'),
           centerTitle: false,
-          backgroundColor: Colors.indigoAccent,
+          backgroundColor: Colors.red.shade900,
           actions: <Widget>[
             IconButton(icon: Icon(Icons.search), onPressed: () {})
           ],
