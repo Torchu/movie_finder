@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movie_finder/src/models/actors_model.dart';
 import 'package:movie_finder/src/models/movie_model.dart';
+import 'package:movie_finder/src/providers/movies_provider.dart';
 
 class MovieDetails extends StatelessWidget {
   @override
@@ -8,18 +10,20 @@ class MovieDetails extends StatelessWidget {
     final _screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: CustomScrollView(
-      slivers: <Widget>[
-        _createAppBar(movie, _screenSize),
-        SliverList(
-          delegate: SliverChildListDelegate([
-            SizedBox(height: _screenSize.height * 0.01),
-            _createMovieTitle(movie, context, _screenSize),
-            _createMovieDescription(movie)
-          ]),
-        )
-      ],
-    ));
+      body: CustomScrollView(
+        slivers: <Widget>[
+          _createAppBar(movie, _screenSize),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(height: _screenSize.height * 0.01),
+              _createMovieTitle(movie, context, _screenSize),
+              _createMovieDescription(movie, _screenSize),
+              _createMovieCasting(movie, _screenSize, context)
+            ]),
+          )
+        ],
+      )
+    );
   }
 
   Widget _createAppBar(Movie movie, Size screenSize) {
@@ -81,12 +85,70 @@ class MovieDetails extends StatelessWidget {
     );
   }
 
-  Widget _createMovieDescription(Movie movie) {
+  Widget _createMovieDescription(Movie movie, Size screenSize) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenSize.height * 0.01,
+        vertical: screenSize.width * 0.05
+      ),
       child: Text(
         movie.overview,
         textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget _createMovieCasting(Movie movie, Size screenSize, BuildContext context) {
+    final movieProvider = new MovieProvider();
+
+    return FutureBuilder(
+      future: movieProvider.getCast(movie.id),
+      builder: (BuildContext context, AsyncSnapshot<ActorList> snapshot) {
+        return snapshot.hasData
+            ? _createActorsPageView(snapshot.data, screenSize, context)
+            : Container(
+                height: screenSize.height * 0.5,
+                child: Center(child: CircularProgressIndicator()));
+      },
+    );
+  }
+
+  Widget _createActorsPageView(ActorList cast, Size screensize, BuildContext context) {
+    return SizedBox(
+      height: screensize.height * 0.2,
+      child: PageView.builder(
+        pageSnapping: false,
+        itemCount: cast.total,
+        controller: PageController(viewportFraction: 0.3, initialPage: 1),
+        itemBuilder: (context, i) => _createActorCard(cast.items[i], screensize, context)
+      ),
+    );
+  }
+
+  Widget _createActorCard(Actor actor, Size screenSize, BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              image: actor.getProfileImg(),
+              placeholder: AssetImage('assets/img/no-image.jpg'),
+              fit: BoxFit.cover,
+              height: screenSize.height * 0.15,
+            ),
+          ),
+          Text(
+            actor.character,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          Text(
+            actor.name,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.caption,
+          )
+        ],
       ),
     );
   }
