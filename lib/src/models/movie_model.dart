@@ -55,6 +55,12 @@ class Movie {
         ? NetworkImage('https://image.tmdb.org/t/p/w500$posterPath')
         : AssetImage('assets/img/no-image.jpg');
   }
+
+  ImageProvider<dynamic> getBackdropImg() {
+    return backdropPath != null
+        ? NetworkImage('https://image.tmdb.org/t/p/w500$backdropPath')
+        : AssetImage('assets/img/no-image.jpg');
+  }
 }
 
 class MovieList {
