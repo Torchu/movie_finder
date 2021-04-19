@@ -33,7 +33,7 @@ class CardCarousell extends StatelessWidget {
   Widget _card(BuildContext context, Movie movie) {
     final _screenSize = MediaQuery.of(context).size;
 
-    return Container(
+    final card = Container(
       margin: EdgeInsets.only(right: _screenSize.width * 0.035),
       child: Column(
         children: <Widget>[
@@ -52,6 +52,12 @@ class CardCarousell extends StatelessWidget {
               style: Theme.of(context).textTheme.caption)
         ],
       ),
+    );
+    return GestureDetector(
+      child: card,
+      onTap: () {
+        Navigator.pushNamed(context, 'details', arguments: movie);
+      },
     );
   }
 }
