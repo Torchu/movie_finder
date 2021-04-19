@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_finder/src/models/movie_model.dart';
 import 'package:movie_finder/src/providers/movies_provider.dart';
+import 'package:movie_finder/src/search/search_delegate.dart';
 import 'package:movie_finder/src/widgets/card_carousell_widget.dart';
 import 'package:movie_finder/src/widgets/card_swiper_widget.dart';
 
@@ -15,7 +16,11 @@ class HomePage extends StatelessWidget {
           centerTitle: false,
           backgroundColor: Colors.red.shade900,
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.search), onPressed: () {})
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: MovieSearch());
+                })
           ],
         ),
         body: Container(
@@ -57,9 +62,7 @@ class HomePage extends StatelessWidget {
             builder: (BuildContext context, AsyncSnapshot<MovieList> snapshot) {
               return snapshot.hasData
                   ? CardCarousell(
-                    movies: snapshot.data,
-                    nextPage: movieProvider.getPopular
-                  )
+                      movies: snapshot.data, nextPage: movieProvider.getPopular)
                   : Container(
                       height: MediaQuery.of(context).size.height * 0.2,
                       child: Center(child: CircularProgressIndicator()));
