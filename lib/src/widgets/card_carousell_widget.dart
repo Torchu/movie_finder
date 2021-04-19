@@ -32,18 +32,21 @@ class CardCarousell extends StatelessWidget {
 
   Widget _card(BuildContext context, Movie movie) {
     final _screenSize = MediaQuery.of(context).size;
-
+    movie.tagId = '${movie.id}-carousell';
     final card = Container(
       margin: EdgeInsets.only(right: _screenSize.width * 0.035),
       child: Column(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: FadeInImage(
-              placeholder: AssetImage('assets/img/no-image.jpg'),
-              image: movie.getPosterImg(),
-              fit: BoxFit.cover,
-              height: _screenSize.height * 0.175,
+          Hero(
+            tag: movie.tagId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: FadeInImage(
+                placeholder: AssetImage('assets/img/no-image.jpg'),
+                image: movie.getPosterImg(),
+                fit: BoxFit.cover,
+                height: _screenSize.height * 0.175,
+              ),
             ),
           ),
           SizedBox(height: _screenSize.height * 0.005),

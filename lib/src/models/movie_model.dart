@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Movie {
+  String tagId;
   bool adult;
   String backdropPath;
   List<int> genreIds;
