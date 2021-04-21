@@ -219,27 +219,38 @@ class MovieDetails extends StatelessWidget {
     );
   }
 
-  Widget _createRecommendationCard(Movie recommendation, BuildContext context) {
+  Widget _createRecommendationCard(Movie movie, BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
-    return Container(
+    movie.tagId = '${movie.id}-recommendation';
+    final card = Container(
       child: Column(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: FadeInImage(
-              image: recommendation.getPosterImg(),
-              placeholder: AssetImage('assets/img/no-image.jpg'),
-              fit: BoxFit.cover,
-              height: _screenSize.height * 0.15,
+          Hero(
+            tag: movie.tagId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: FadeInImage(
+                image: movie.getPosterImg(),
+                placeholder: AssetImage('assets/img/no-image.jpg'),
+                fit: BoxFit.cover,
+                height: _screenSize.height * 0.15,
+              ),
             ),
           ),
           Text(
-            recommendation.title,
+            movie.title,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyText1,
           ),
         ],
       ),
+    );
+
+    return GestureDetector(
+      child: card,
+      onTap: () {
+        Navigator.pushNamed(context, 'details', arguments: movie);
+      },
     );
   }
 }
