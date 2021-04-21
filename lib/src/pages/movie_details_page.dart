@@ -18,7 +18,8 @@ class MovieDetails extends StatelessWidget {
             SizedBox(height: _screenSize.height * 0.01),
             _createMovieTitle(movie, context),
             _createMovieDescription(movie, context),
-            _createMovieCasting(movie, context)
+            _createMovieCasting(movie, context),
+            _createRecommendations(movie, context)
           ]),
         )
       ],
@@ -90,31 +91,48 @@ class MovieDetails extends StatelessWidget {
   }
 
   Widget _createMovieDescription(Movie movie, BuildContext context) {
-    final _screenSize = MediaQuery.of(context).size; 
+    final _screenSize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: _screenSize.height * 0.01,
-          vertical: _screenSize.width * 0.05),
-      child: Text(
-        movie.overview,
-        textAlign: TextAlign.justify,
-        style: TextStyle(fontSize: 16.0)
-      ),
-    );
+        padding: EdgeInsets.symmetric(
+            horizontal: _screenSize.height * 0.01,
+            vertical: _screenSize.width * 0.05),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Overview', style: Theme.of(context).textTheme.headline6),
+            SizedBox(
+              height: _screenSize.height * 0.02,
+            ),
+            Text(movie.overview,
+                textAlign: TextAlign.justify, style: TextStyle(fontSize: 16.0)),
+          ],
+        ));
   }
 
   Widget _createMovieCasting(Movie movie, BuildContext context) {
     final movieProvider = new MovieProvider();
     final _screenSize = MediaQuery.of(context).size;
-    return FutureBuilder(
-      future: movieProvider.getCast(movie.id),
-      builder: (BuildContext context, AsyncSnapshot<ActorList> snapshot) {
-        return snapshot.hasData
-            ? _createActorsPageView(snapshot.data, context)
-            : Container(
-                height: _screenSize.height * 0.5,
-                child: Center(child: CircularProgressIndicator()));
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: _screenSize.height * 0.01),
+          child: Text('Cast', style: Theme.of(context).textTheme.headline6),
+        ),
+        SizedBox(
+          height: _screenSize.height * 0.02,
+        ),
+        FutureBuilder(
+          future: movieProvider.getCast(movie.id),
+          builder: (BuildContext context, AsyncSnapshot<ActorList> snapshot) {
+            return snapshot.hasData
+                ? _createActorsPageView(snapshot.data, context)
+                : Container(
+                    height: _screenSize.height * 0.5,
+                    child: Center(child: CircularProgressIndicator()));
+          },
+        ),
+      ],
     );
   }
 
@@ -157,6 +175,82 @@ class MovieDetails extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Widget _createRecommendations(Movie movie, BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
+    final movieProvider = new MovieProvider();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: _screenSize.height * 0.01),
+          child: Text('If you liked ${movie.title}',
+              style: Theme.of(context).textTheme.headline6),
+        ),
+        SizedBox(
+          height: _screenSize.height * 0.02,
+        ),
+        FutureBuilder(
+          future: movieProvider.getRecommendations(movie.id),
+          builder: (BuildContext context, AsyncSnapshot<MovieList> snapshot) {
+            return snapshot.hasData
+                ? _createRecommendationsPageView(snapshot.data, context)
+                : Container(
+                    height: _screenSize.height * 0.5,
+                    child: Center(child: CircularProgressIndicator()));
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _createRecommendationsPageView(MovieList recommendations, BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
+    return SizedBox(
+      height: _screenSize.height * 0.2,
+      child: PageView.builder(
+          pageSnapping: false,
+          itemCount: recommendations.total,
+          controller: PageController(viewportFraction: 0.3, initialPage: 1),
+          itemBuilder: (context, i) =>
+              _createRecommendationCard(recommendations.items[i], context)),
+    );
+  }
+
+  Widget _createRecommendationCard(Movie movie, BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
+    movie.tagId = '${movie.id}-recommendation';
+    final card = Container(
+      child: Column(
+        children: <Widget>[
+          Hero(
+            tag: movie.tagId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: FadeInImage(
+                image: movie.getPosterImg(),
+                placeholder: AssetImage('assets/img/no-image.jpg'),
+                fit: BoxFit.cover,
+                height: _screenSize.height * 0.15,
+              ),
+            ),
+          ),
+          Text(
+            movie.title,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+        ],
+      ),
+    );
+
+    return GestureDetector(
+      child: card,
+      onTap: () {
+        Navigator.pushNamed(context, 'details', arguments: movie);
+      },
     );
   }
 }
