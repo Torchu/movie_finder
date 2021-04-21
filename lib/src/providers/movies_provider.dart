@@ -73,4 +73,11 @@ class MovieProvider {
 
     return await getFromAPI(path);
   }
+
+  Future<MovieList> getRecommendations(int movieId) async {
+    final path = Uri.https(_url, _apiPath + '/$movieId/recommendations',
+        {'api_key': _apikey, 'language': _language});
+
+    return await getFromAPI(path);
+  }
 }
