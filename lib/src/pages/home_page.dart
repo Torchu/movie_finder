@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Trending movies'),
+          title: Text('Movie Finder'),
           centerTitle: false,
           backgroundColor: Colors.red.shade900,
           actions: <Widget>[
