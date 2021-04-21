@@ -6,7 +6,6 @@ import 'package:movie_finder/src/models/movie_model.dart';
 
 class MovieProvider {
   // Since we have no backend, we must store here the api key
-  // TODO: Erase the apikey if a backend is built
   String _apikey = '3527302a71bc5f1fb95f634007e123d2';
   String _url = 'api.themoviedb.org';
   String _apiPath = '3/movie';
